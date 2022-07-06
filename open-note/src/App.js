@@ -2,6 +2,8 @@ import './App.css';
 import axios from 'axios';
 
 import React, { Component } from 'react'
+import { Button, Container, Col, Row, Form, ListGroup } from 'react-bootstrap';
+
 
 export class App extends Component {
 
@@ -28,9 +30,11 @@ export class App extends Component {
     });
   }
 
-  openNote(note) {
+  openNote(note, event) {
+    event.preventDefault();
     this.setState({
-      note: {...note }});
+      note: { ...note }
+    });
   }
 
 
@@ -39,27 +43,35 @@ export class App extends Component {
     const content = this.state.note.content;
 
     return (
-      <div className="App">
-        <div className="App-row">
-          <div className="App-col1">
-            <h1>Notes</h1>
-            <ul>
-              {this.state.notes.map((x, i) =>
-                <li key={i} style = {{backgroundColor: x.id == this.state.note.id ? "lightblue" : ""}} >
-                  <a href="#" onClick={() => this.openNote(x)}  >{x.title}</a>
-                </li>
-              )}
-            </ul>
-          </div>
-          <div className="App-col2">
-            <div>
-              <input name="title" value={title} onChange={this.handleChange} type="text" placeholder="title"  />
-            </div>
-            <div>
-              <textarea name="content" value={content} onChange={this.handleChange} id="" cols="30" rows="10" placeholder="write something.." ></textarea>
-            </div>
-          </div>
-        </div>
+      <div className="App h-100">
+        <Container fluid className="h-100">
+          <Row className="h-100">
+            <Col sm="4" md="3" lg="2" className="py-3 bg-light">
+              <h1>Notes</h1>
+              <ListGroup>
+                {this.state.notes.map((x, i) =>
+                  <ListGroup.Item key={i} active={x.id == this.state.note.id} action href="#" onClick={(e) => this.openNote(x, e)}  >
+                    {x.title}
+                  </ListGroup.Item>
+                )}
+              </ListGroup>
+            </Col>
+            <Col sm="8" md="9" lg="10" className="py-3" >
+              <Form className="h-100 d-flex flex-column">
+                <Form.Group className="mb-2">
+                  <Form.Control name="title" value={title} onChange={this.handleChange} type="text" placeholder="title" />
+                </Form.Group>
+                <Form.Group className="mb-2 flex-fill">
+                  <Form.Control className="h-100" as="textarea" name="content" value={content} onChange={this.handleChange} cols="30" rows="10" placeholder="write something.." />
+                </Form.Group>
+                <div>
+                  <Button variant="primary" className="me-2">Save</Button>
+                  <Button variant="danger">Delete</Button>
+                </div>
+              </Form>
+            </Col>
+          </Row>
+        </Container>
       </div>
     )
   }
